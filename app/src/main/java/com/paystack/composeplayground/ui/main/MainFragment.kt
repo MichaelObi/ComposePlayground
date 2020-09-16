@@ -6,24 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.compose.Composable
-import androidx.compose.Recomposer
-import androidx.compose.getValue
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.layout.InnerPadding
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.setContent
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.ui.core.Modifier
-import androidx.ui.core.setContent
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.TextField
-import androidx.ui.input.TextFieldValue
-import androidx.ui.layout.InnerPadding
-import androidx.ui.layout.Spacer
-import androidx.ui.layout.preferredHeight
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.MaterialTheme
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import com.paystack.composeplayground.data.Question
 import com.paystack.composeplayground.data.Question.MultipleChoiceQuestion
 import com.paystack.composeplayground.data.Question.TextQuestion
@@ -55,9 +55,10 @@ class MainFragment : Fragment() {
     @Preview
     @Composable
     private fun Form() {
+        val viewState by viewModel.state.observeAsState()
+
         MaterialTheme {
-            TextField(TextFieldValue(), {})
-            val viewState by viewModel.state.observeAsState()
+            TextField(TextFieldValue(), {}, {})
             viewState?.let { QuestionList(viewState = it) }
         }
     }
