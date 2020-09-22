@@ -6,27 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
-import androidx.compose.foundation.ScrollableColumn
-import androidx.compose.foundation.Text
-import androidx.compose.foundation.layout.InnerPadding
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.preferredHeight
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Recomposer
-import androidx.compose.runtime.getValue
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.ui.tooling.preview.Preview
-import com.paystack.composeplayground.data.Question
-import com.paystack.composeplayground.data.Question.MultipleChoiceQuestion
-import com.paystack.composeplayground.data.Question.TextQuestion
+import com.paystack.composeplayground.data.*
 
 class MainFragment : Fragment() {
 
@@ -52,21 +48,18 @@ class MainFragment : Fragment() {
         Form()
     }
 
-    @Preview
     @Composable
     private fun Form() {
         val viewState by viewModel.state.observeAsState()
 
         MaterialTheme {
-            TextField(TextFieldValue(), {}, {})
-            viewState?.let { QuestionList(viewState = it) }
+            viewState?.let { QuestionList(it.questions) }
         }
     }
 
     @Composable
-    fun QuestionList(viewState: MainViewState) {
+    fun QuestionList(questions: List<Question>) {
         ScrollableColumn(contentPadding = InnerPadding(start = 16.dp, end = 16.dp)) {
-            val questions = viewState.questions
             questions.forEach {
                 Spacer(modifier = Modifier.preferredHeight(16.dp))
                 Text(text = it.text, style = MaterialTheme.typography.subtitle2)
@@ -79,13 +72,65 @@ class MainFragment : Fragment() {
     fun AnswerField(question: Question) {
         when (question) {
             is TextQuestion -> TextAnswer()
-            is MultipleChoiceQuestion -> TODO()
+            is SingleChoiceQuestion -> SelectAnswer(question.options)
+            is DateQuestion -> DateAnswer()
         }
     }
 
     @Composable
     fun TextAnswer() {
+        Spacer(modifier = Modifier.preferredHeight(4.dp))
+        OutlinedTextField(
+            value = TextFieldValue(),
+            onValueChange = {},
+            label = {},
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+
+    @Composable
+    fun DateAnswer() {
         Spacer(modifier = Modifier.preferredHeight(8.dp))
+    }
+
+
+    @OptIn(ExperimentalFocus::class)
+    @Composable
+    fun SelectAnswer(options: List<Option>) {
+        var expanded by remember { mutableStateOf(false) }
+        var selected: Option? by remember { mutableStateOf(null) }
+
+        val textField = @Composable {
+            Box(
+                shape = RoundedCornerShape(4.dp),
+                border = BorderStroke(0.5.dp, androidx.compose.ui.graphics.Color.Black),
+                modifier = Modifier.fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .wrapContentHeight().clickable(onClick = { expanded = true })
+            ) {
+                Text(
+                    modifier = Modifier.fillMaxWidth().padding(8.dp, 16.dp),
+                    text = selected?.text ?: " ",
+                )
+            }
+        }
+        DropdownMenu(
+            toggle = textField,
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            toggleModifier = Modifier.fillMaxWidth()
+        ) {
+            options.forEach { option ->
+                val onClick = {
+                    selected = option
+                    expanded = false
+                }
+                DropdownMenuItem(onClick) {
+                    Text(text = option.text)
+                }
+            }
+
+        }
     }
 
     companion object {

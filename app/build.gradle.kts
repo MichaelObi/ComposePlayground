@@ -35,12 +35,14 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
         jvmTarget = "1.8"
+        useIR = true
         freeCompilerArgs = freeCompilerArgs + arrayOf(
             "-Xopt-in=kotlin.RequiresOptIn",
             "-Xallow-jvm-ir-dependencies",
@@ -71,11 +73,14 @@ dependencies {
     implementation(Libs.AndroidX.Lifecycle.livedata)
 
     implementation(Libs.AndroidX.Compose.layout)
+    implementation(Libs.AndroidX.Compose.foundation)
     implementation(Libs.AndroidX.Compose.material)
     implementation(Libs.AndroidX.Compose.materialIconsExtended)
     implementation(Libs.AndroidX.Compose.tooling)
     implementation(Libs.AndroidX.Compose.runtime)
     implementation(Libs.AndroidX.Compose.runtimeLivedata)
+
+    coreLibraryDesugaring(Libs.jdkDesugar)
 
     implementation(Libs.Hilt.library)
     kapt(Libs.Hilt.compiler)
