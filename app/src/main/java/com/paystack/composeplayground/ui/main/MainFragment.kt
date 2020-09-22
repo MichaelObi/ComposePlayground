@@ -9,14 +9,14 @@ import android.widget.FrameLayout
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focusObserver
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.setContent
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -53,57 +53,77 @@ class MainFragment : Fragment() {
         val viewState by viewModel.state.observeAsState()
 
         MaterialTheme {
-            viewState?.let { QuestionList(it.requirements) }
-        }
-    }
-
-    @Composable
-    fun QuestionList(requirements: List<Requirement>) {
-        ScrollableColumn(contentPadding = InnerPadding(start = 16.dp, end = 16.dp)) {
-            requirements.forEach {
-                Spacer(modifier = Modifier.preferredHeight(16.dp))
-                Text(text = it.text, style = MaterialTheme.typography.subtitle2)
-                AnswerField(requirement = it)
+            Column {
+                val title = @Composable {
+                    Text(text = "Compliance")
+                }
+                TopAppBar(title)
+                viewState?.let { state ->
+                    ScrollableColumn(contentPadding = InnerPadding(start = 16.dp, end = 16.dp)) {
+                        state.requirements.forEach {
+                            RequirementField(requirement = it)
+                        }
+                    }
+                }
             }
         }
     }
 
     @Composable
-    fun AnswerField(requirement: Requirement) {
+    fun RequirementField(requirement: Requirement) {
+        Spacer(modifier = Modifier.preferredHeight(16.dp))
         when (requirement) {
-            is TextRequirement -> TextAnswer()
-            is SingleChoiceRequirement -> SelectAnswer(requirement.options)
+            is TextRequirement -> TextAnswer(requirement)
+            is SingleChoiceRequirement -> SelectAnswer(requirement)
             is DateRequirement -> DateAnswer()
+            is FileRequirement -> FileAnswer(requirement)
         }
     }
 
+    @OptIn(ExperimentalFocus::class)
     @Composable
-    fun TextAnswer() {
-        Spacer(modifier = Modifier.preferredHeight(4.dp))
+    fun TextAnswer(requirement: TextRequirement) {
+        var hideHint by remember { mutableStateOf(true) }
+
+        Text(text = requirement.text, style = MaterialTheme.typography.subtitle2)
         OutlinedTextField(
             value = TextFieldValue(),
             onValueChange = {},
-            label = {},
+            label = {
+                if (!hideHint) {
+                    Text(text = requirement.placeholder.orEmpty())
+                }
+            },
             modifier = Modifier.fillMaxWidth()
+                .focusObserver { hideHint = it == FocusState.Active }
         )
     }
 
     @Composable
     fun DateAnswer() {
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+    }
+
+    @Composable
+    fun FileAnswer(requirement: FileRequirement) {
+        Button(
+            onClick = {},
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = requirement.text)
+        }
     }
 
 
-    @OptIn(ExperimentalFocus::class)
     @Composable
-    fun SelectAnswer(options: List<Option>) {
+    fun SelectAnswer(requirement: SingleChoiceRequirement) {
         var expanded by remember { mutableStateOf(false) }
         var selected: Option? by remember { mutableStateOf(null) }
 
         val textField = @Composable {
             Box(
                 shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(0.5.dp, androidx.compose.ui.graphics.Color.Black),
+                border = BorderStroke(0.5.dp, Color.Black),
                 modifier = Modifier.fillMaxWidth()
                     .padding(top = 8.dp)
                     .wrapContentHeight().clickable(onClick = { expanded = true })
@@ -114,13 +134,16 @@ class MainFragment : Fragment() {
                 )
             }
         }
+
+        Text(text = requirement.text, style = MaterialTheme.typography.subtitle2)
+
         DropdownMenu(
             toggle = textField,
             expanded = expanded,
             onDismissRequest = { expanded = false },
             toggleModifier = Modifier.fillMaxWidth()
         ) {
-            options.forEach { option ->
+            requirement.options.forEach { option ->
                 val onClick = {
                     selected = option
                     expanded = false
@@ -129,7 +152,10 @@ class MainFragment : Fragment() {
                     Text(text = option.text)
                 }
             }
+        }
 
+        selected?.requirements?.forEach {
+            RequirementField(requirement = it)
         }
     }
 

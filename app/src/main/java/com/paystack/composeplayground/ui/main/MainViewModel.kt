@@ -3,8 +3,8 @@ package com.paystack.composeplayground.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.paystack.composeplayground.data.FileRequirement
 import com.paystack.composeplayground.data.Option
-import com.paystack.composeplayground.data.Requirement
 import com.paystack.composeplayground.data.SingleChoiceRequirement
 import com.paystack.composeplayground.data.TextRequirement
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,27 +22,53 @@ class MainViewModel : ViewModel() {
     fun currentState() = _state.value
 
     init {
-        _state.value = currentState().copy(requirements = questions)
+        _state.value = currentState().copy(requirements = requirements)
     }
 
     companion object {
-        val questions = listOf<Requirement>(
-            TextRequirement(
-                randomId(),
-                "How many goals did Jesse Lingard score in the 2019/2020 season?"
-            ),
-            TextRequirement(
-                randomId(),
-                "What English team has won the highest number of premier league games?"
-            ),
-
+        val requirements = listOf(
             SingleChoiceRequirement(
                 randomId(),
                 "What means of identification do you have?",
                 listOf(
-                    Option(randomId(), "International Passport"),
-                    Option(randomId(), "Driver's License"),
-                    Option(randomId(), "National ID")
+                    Option(
+                        randomId(),
+                        "International Passport",
+                        listOf(
+                            TextRequirement(
+                                randomId(),
+                                "Passport number",
+                                "A1234567890"
+                            ),
+                            FileRequirement(
+                                randomId(),
+                                "Upload Passport",
+                                listOf("image/*")
+                            )
+                        )
+                    ),
+                    Option(
+                        randomId(),
+                        "Driver's License",
+                        listOf(
+                            FileRequirement(
+                                randomId(),
+                                "Upload Driver's License",
+                                listOf("image/*")
+                            )
+                        )
+                    ),
+                    Option(
+                        randomId(),
+                        "National ID",
+                        listOf(
+                            FileRequirement(
+                                randomId(),
+                                "Upload National ID",
+                                listOf("image/*")
+                            )
+                        )
+                    )
                 )
             )
         )

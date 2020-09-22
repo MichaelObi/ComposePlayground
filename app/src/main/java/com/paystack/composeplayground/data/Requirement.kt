@@ -9,7 +9,8 @@ sealed class Requirement(
 
 data class TextRequirement(
     override val id: String,
-    override val text: String
+    override val text: String,
+    val placeholder: String? = null
 ) : Requirement(id, text)
 
 data class SingleChoiceRequirement(
@@ -23,4 +24,11 @@ data class DateRequirement(
     override val text: String,
     val minDate: LocalDate,
     val maxDate: LocalDate = LocalDate.now(),
+) : Requirement(id, text)
+
+data class FileRequirement(
+    override val id: String,
+    override val text: String,
+    val supportedMimeTypes: List<String>,
+    val maxFileSize: Long = 2000000
 ) : Requirement(id, text)
