@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.paystack.composeplayground.data.Option
-import com.paystack.composeplayground.data.Question
-import com.paystack.composeplayground.data.SingleChoiceQuestion
-import com.paystack.composeplayground.data.TextQuestion
+import com.paystack.composeplayground.data.Requirement
+import com.paystack.composeplayground.data.SingleChoiceRequirement
+import com.paystack.composeplayground.data.TextRequirement
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
@@ -22,21 +22,21 @@ class MainViewModel : ViewModel() {
     fun currentState() = _state.value
 
     init {
-        _state.value = currentState().copy(questions = questions)
+        _state.value = currentState().copy(requirements = questions)
     }
 
     companion object {
-        val questions = listOf<Question>(
-            TextQuestion(
+        val questions = listOf<Requirement>(
+            TextRequirement(
                 randomId(),
                 "How many goals did Jesse Lingard score in the 2019/2020 season?"
             ),
-            TextQuestion(
+            TextRequirement(
                 randomId(),
                 "What English team has won the highest number of premier league games?"
             ),
 
-            SingleChoiceQuestion(
+            SingleChoiceRequirement(
                 randomId(),
                 "What means of identification do you have?",
                 listOf(

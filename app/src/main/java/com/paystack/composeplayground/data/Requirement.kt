@@ -2,25 +2,25 @@ package com.paystack.composeplayground.data
 
 import java.time.LocalDate
 
-sealed class Question(
+sealed class Requirement(
     open val id: String,
     open val text: String
 )
 
-data class TextQuestion(
+data class TextRequirement(
     override val id: String,
     override val text: String
-) : Question(id, text)
+) : Requirement(id, text)
 
-data class SingleChoiceQuestion(
+data class SingleChoiceRequirement(
     override val id: String,
     override val text: String,
     val options: List<Option>
-) : Question(id, text)
+) : Requirement(id, text)
 
-data class DateQuestion(
+data class DateRequirement(
     override val id: String,
     override val text: String,
     val minDate: LocalDate,
     val maxDate: LocalDate = LocalDate.now(),
-) : Question(id, text)
+) : Requirement(id, text)

@@ -53,27 +53,27 @@ class MainFragment : Fragment() {
         val viewState by viewModel.state.observeAsState()
 
         MaterialTheme {
-            viewState?.let { QuestionList(it.questions) }
+            viewState?.let { QuestionList(it.requirements) }
         }
     }
 
     @Composable
-    fun QuestionList(questions: List<Question>) {
+    fun QuestionList(requirements: List<Requirement>) {
         ScrollableColumn(contentPadding = InnerPadding(start = 16.dp, end = 16.dp)) {
-            questions.forEach {
+            requirements.forEach {
                 Spacer(modifier = Modifier.preferredHeight(16.dp))
                 Text(text = it.text, style = MaterialTheme.typography.subtitle2)
-                AnswerField(question = it)
+                AnswerField(requirement = it)
             }
         }
     }
 
     @Composable
-    fun AnswerField(question: Question) {
-        when (question) {
-            is TextQuestion -> TextAnswer()
-            is SingleChoiceQuestion -> SelectAnswer(question.options)
-            is DateQuestion -> DateAnswer()
+    fun AnswerField(requirement: Requirement) {
+        when (requirement) {
+            is TextRequirement -> TextAnswer()
+            is SingleChoiceRequirement -> SelectAnswer(requirement.options)
+            is DateRequirement -> DateAnswer()
         }
     }
 
@@ -125,7 +125,7 @@ class MainFragment : Fragment() {
                     selected = option
                     expanded = false
                 }
-                DropdownMenuItem(onClick) {
+                DropdownMenuItem(onClick, Modifier.fillMaxWidth()) {
                     Text(text = option.text)
                 }
             }
