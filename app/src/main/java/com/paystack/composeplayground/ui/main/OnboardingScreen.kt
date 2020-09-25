@@ -14,7 +14,6 @@ import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.paystack.composeplayground.R
@@ -52,12 +51,18 @@ fun FormTopAppBar(
 fun OnboardingScreen(
     requirements: List<Requirement>,
     answers: Map<RequirementId, Answer>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAnswerChanged: (RequirementId, Answer) -> Unit
 ) {
     var currentRequirementIndex by savedInstanceState { 0 }
     val requirement = remember(currentRequirementIndex) { requirements[currentRequirementIndex] }
+    val answer = answers[requirement.id]
+
     ScrollableColumn(modifier = modifier.then(Modifier.padding(16.dp))) {
-        RequirementField(requirement = requirement)
+        RequirementField(requirement, answer) { newAnswer ->
+            onAnswerChanged(requirement.id, newAnswer)
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
         if (currentRequirementIndex > 0) {
             OutlinedButton(
@@ -82,10 +87,14 @@ fun OnboardingScreen(
 }
 
 @Composable
-fun RequirementField(requirement: Requirement) {
+fun RequirementField(requirement: Requirement, answer: Answer?, onAnswerChanged: (Answer) -> Unit) {
     Spacer(modifier = Modifier.preferredHeight(16.dp))
     when (requirement) {
-        is TextRequirement -> TextAnswer(requirement)
+        is TextRequirement -> {
+            TextFormField(requirement, answer as TextAnswer?) {
+                onAnswerChanged(TextAnswer(it))
+            }
+        }
         is SingleChoiceRequirement -> SelectAnswer(requirement)
         is DateRequirement -> DateAnswer()
         is FileRequirement -> FileAnswer(requirement)
@@ -94,13 +103,17 @@ fun RequirementField(requirement: Requirement) {
 
 @OptIn(ExperimentalFocus::class)
 @Composable
-fun TextAnswer(requirement: TextRequirement) {
+fun TextFormField(
+    requirement: TextRequirement,
+    answer: TextAnswer?,
+    onValueChanged: (String) -> Unit
+) {
     var hideHint by remember { mutableStateOf(true) }
 
     Text(text = requirement.text, style = MaterialTheme.typography.subtitle2)
     OutlinedTextField(
-        value = TextFieldValue(),
-        onValueChange = {},
+        value = answer?.text.orEmpty(),
+        onValueChange = { onValueChanged(it) },
         label = {
             if (!hideHint) {
                 Text(text = requirement.placeholder.orEmpty())
@@ -166,7 +179,7 @@ fun SelectAnswer(requirement: SingleChoiceRequirement) {
         }
     }
 
-    selected?.requirements?.forEach {
-        RequirementField(requirement = it)
-    }
+//    selected?.requirements?.forEach {
+//        RequirementField(requirement = it)
+//    }
 }

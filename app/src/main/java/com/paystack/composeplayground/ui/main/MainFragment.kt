@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.setContent
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.paystack.composeplayground.R
+import com.paystack.composeplayground.data.Answer
 import com.paystack.composeplayground.ui.theme.PlaygroundTheme
 
 class MainFragment : Fragment() {
@@ -42,7 +43,9 @@ class MainFragment : Fragment() {
                                         answers = state.answers,
                                         modifier = Modifier.fillMaxSize()
                                             .padding(innerPadding)
-                                    )
+                                    ) { requirementId: RequirementId, answer: Answer ->
+                                        viewModel.answerChanged(requirementId, answer)
+                                    }
                                 }
                             )
                         }

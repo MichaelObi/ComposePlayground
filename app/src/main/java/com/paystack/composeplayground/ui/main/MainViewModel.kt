@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
-import com.paystack.composeplayground.data.FileRequirement
-import com.paystack.composeplayground.data.Option
-import com.paystack.composeplayground.data.SingleChoiceRequirement
-import com.paystack.composeplayground.data.TextRequirement
+import com.paystack.composeplayground.data.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
@@ -21,6 +18,13 @@ class MainViewModel : ViewModel() {
         get() = _state.asLiveData()
 
     fun currentState() = _state.value
+
+    fun answerChanged(requirementId: RequirementId, answer: Answer) {
+        val answers = currentState().answers.toMutableMap().apply {
+            put(requirementId, answer)
+        }
+        _state.value = currentState().copy(answers = answers)
+    }
 
     init {
         _state.value = currentState().copy(requirements = requirements)
