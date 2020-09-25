@@ -41,7 +41,7 @@ fun PlaygroundTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
         LightThemeColors
     }
     MaterialTheme(
-        colors = colors,
+        colors = LightThemeColors,
         typography = Typography,
         shapes = Shapes,
         content = content

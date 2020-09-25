@@ -16,7 +16,7 @@ fun randomId() = UUID.randomUUID().toString()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel : ViewModel() {
-    private val _state = MutableStateFlow(MainViewState(listOf()))
+    private val _state = MutableStateFlow(MainViewState(listOf(), mapOf()))
     val state: LiveData<MainViewState>
         get() = _state.asLiveData()
 
@@ -28,6 +28,7 @@ class MainViewModel : ViewModel() {
 
     companion object {
         val requirements = listOf(
+            TextRequirement(randomId(), "BVN", "1234567890"),
             SingleChoiceRequirement(
                 randomId(),
                 "What means of identification do you have?",
@@ -76,7 +77,7 @@ class MainViewModel : ViewModel() {
     }
 }
 
-class MainViewModelFactory: ViewModelProvider.Factory {
+class MainViewModelFactory : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel() as T

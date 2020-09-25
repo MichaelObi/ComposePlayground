@@ -8,6 +8,7 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Recomposer
@@ -30,7 +31,7 @@ class MainFragment : Fragment() {
         return FrameLayout(requireContext()).apply {
             layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             setContent(Recomposer.current()) {
-                PlaygroundTheme {
+                MaterialTheme {
                     Surface(modifier = Modifier.fillMaxSize()) {
                         viewModel.state.observeAsState().value?.let { state ->
                             Scaffold(
@@ -38,6 +39,7 @@ class MainFragment : Fragment() {
                                 bodyContent = { innerPadding ->
                                     OnboardingScreen(
                                         requirements = state.requirements,
+                                        answers = state.answers,
                                         modifier = Modifier.fillMaxSize()
                                             .padding(innerPadding)
                                     )

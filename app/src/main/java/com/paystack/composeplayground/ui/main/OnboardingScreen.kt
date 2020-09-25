@@ -8,15 +8,16 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.runtime.*
+import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focusObserver
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.paystack.composeplayground.R
 import com.paystack.composeplayground.data.*
 
 
@@ -50,14 +51,34 @@ fun FormTopAppBar(
 @Composable
 fun OnboardingScreen(
     requirements: List<Requirement>,
+    answers: Map<RequirementId, Answer>,
     modifier: Modifier = Modifier
 ) {
+    var currentRequirementIndex by savedInstanceState { 0 }
+    val requirement = remember(currentRequirementIndex) { requirements[currentRequirementIndex] }
     ScrollableColumn(modifier = modifier.then(Modifier.padding(16.dp))) {
-        requirements.forEach {
-            RequirementField(requirement = it)
+        RequirementField(requirement = requirement)
+        Spacer(modifier = Modifier.height(20.dp))
+        if (currentRequirementIndex > 0) {
+            OutlinedButton(
+                onClick = { currentRequirementIndex-- },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(id = R.string.previous))
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        if (requirements.lastIndex > currentRequirementIndex) {
+            OutlinedButton(
+                onClick = {
+                    currentRequirementIndex++
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(id = R.string.next))
+            }
         }
     }
-
 }
 
 @Composable
