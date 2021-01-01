@@ -2,16 +2,18 @@ package com.paystack.composeplayground.ui.main
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.*
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronLeft
 import androidx.compose.runtime.*
 import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.ExperimentalFocus
 import androidx.compose.ui.focus.FocusState
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,8 +31,8 @@ fun FormTopAppBar(
         title = {
             Text(
                 text = stringResource(id = title),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
             )
         },
         navigationIcon = {
@@ -90,18 +92,18 @@ fun OnboardingScreen(
 fun RequirementField(requirement: Requirement, answer: Answer?, onAnswerChanged: (Answer) -> Unit) {
     Spacer(modifier = Modifier.preferredHeight(16.dp))
     when (requirement) {
-        is TextRequirement -> {
-            TextFormField(requirement, answer as TextAnswer?) {
-                onAnswerChanged(TextAnswer(it))
-            }
+        is TextRequirement -> TextFormField(requirement, answer as TextAnswer?) {
+            onAnswerChanged(TextAnswer(it))
         }
-        is SingleChoiceRequirement -> SelectAnswer(requirement)
+
+        is SingleChoiceRequirement -> SingleChoiceField(requirement, answer as OptionAnswer?) {
+            onAnswerChanged(OptionAnswer(it))
+        }
         is DateRequirement -> DateAnswer()
-        is FileRequirement -> FileAnswer(requirement)
+        is FileRequirement -> FileField(requirement)
     }
 }
 
-@OptIn(ExperimentalFocus::class)
 @Composable
 fun TextFormField(
     requirement: TextRequirement,
@@ -120,7 +122,7 @@ fun TextFormField(
             }
         },
         modifier = Modifier.fillMaxWidth()
-            .focusObserver { hideHint = it == FocusState.Active }
+            .onFocusChanged { hideHint = it == FocusState.Active }
     )
 }
 
@@ -129,7 +131,7 @@ fun DateAnswer() {
 }
 
 @Composable
-fun FileAnswer(requirement: FileRequirement) {
+fun FileField(requirement: FileRequirement) {
     Button(
         onClick = {},
         shape = MaterialTheme.shapes.medium,
@@ -141,21 +143,23 @@ fun FileAnswer(requirement: FileRequirement) {
 
 
 @Composable
-fun SelectAnswer(requirement: SingleChoiceRequirement) {
+fun SingleChoiceField(
+    requirement: SingleChoiceRequirement,
+    selectedAnswer: OptionAnswer?,
+    onValueChanged: (Option) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
-    var selected: Option? by remember { mutableStateOf(null) }
 
     val textField = @Composable {
         Box(
-            shape = RoundedCornerShape(4.dp),
-            border = BorderStroke(0.5.dp, MaterialTheme.colors.onSurface),
             modifier = Modifier.fillMaxWidth()
-                .padding(top = 8.dp)
-                .wrapContentHeight().clickable(onClick = { expanded = true })
+                .border(BorderStroke(0.5.dp, MaterialTheme.colors.onSurface), RoundedCornerShape(4.dp))
+                .wrapContentHeight()
+                .clickable(onClick = { expanded = true })
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(8.dp, 16.dp),
-                text = selected?.text ?: " ",
+                text = selectedAnswer?.option?.text.orEmpty(),
             )
         }
     }
@@ -170,7 +174,7 @@ fun SelectAnswer(requirement: SingleChoiceRequirement) {
     ) {
         requirement.options.forEach { option ->
             val onClick = {
-                selected = option
+                onValueChanged(option)
                 expanded = false
             }
             DropdownMenuItem(onClick, Modifier.fillMaxWidth()) {
@@ -179,7 +183,9 @@ fun SelectAnswer(requirement: SingleChoiceRequirement) {
         }
     }
 
-//    selected?.requirements?.forEach {
-//        RequirementField(requirement = it)
-//    }
+    ChildRequirements(selectedAnswer)
+}
+
+@Composable
+private fun ChildRequirements(selectedAnswer: OptionAnswer?) {
 }
