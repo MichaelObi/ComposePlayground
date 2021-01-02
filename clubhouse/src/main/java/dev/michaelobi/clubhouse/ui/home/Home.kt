@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -101,12 +102,12 @@ fun HomeAppBar(avatarUrl: String?, modifier: Modifier) {
 @Composable
 fun RoomList() {
     for (n in 1..15) {
-        RoomCard("Vibes and Insha'Allah ($n)")
+        RoomCard("Vibes and Insha'Allah", "Vibes and Insha'Allah ($n)")
     }
 }
 
 @Composable
-fun RoomCard(roomName: String?) {
+fun RoomCard(clubName: String?, roomName: String?) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = 1.dp,
@@ -114,35 +115,53 @@ fun RoomCard(roomName: String?) {
     ) {
 
         val constraintSet = ConstraintSet {
-            val clubName = createRefFor("clubName")
+            val clubNameText = createRefFor("clubNameText")
             val clubNameIcon = createRefFor("clubNameIcon")
+            val roomNameText = createRefFor("roomNameText")
 
-            constrain(clubName) {
+            constrain(clubNameText) {
                 start.linkTo(parent.start)
                 top.linkTo(parent.top)
             }
             constrain(clubNameIcon) {
-                start.linkTo(clubName.end)
-                top.linkTo(clubName.top)
-                bottom.linkTo(clubName.bottom)
+                start.linkTo(clubNameText.end)
+                top.linkTo(clubNameText.top)
+                bottom.linkTo(clubNameText.bottom)
                 height = Dimension.fillToConstraints
+            }
+
+            constrain(roomNameText) {
+                start.linkTo(parent.start)
+                top.linkTo(clubNameText.bottom)
+                end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
             }
         }
         ConstraintLayout(
             constraintSet = constraintSet,
             modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp)
         ) {
-            if (!roomName.isNullOrEmpty()) {
+            if (!clubName.isNullOrEmpty()) {
                 Text(
-                    text = roomName.toUpperCase(Locale.getDefault()),
+                    text = clubName.toUpperCase(Locale.getDefault()),
                     style = MaterialTheme.typography.caption.copy(letterSpacing = 1.0.sp),
-                    modifier = Modifier.layoutId("clubName")
+                    modifier = Modifier.layoutId("clubNameText")
                 )
                 Image(
                     imageVector = vectorResource(id = R.drawable.ic_round_home_24),
                     colorFilter = ColorFilter.tint(color = jungleGreen),
                     modifier = Modifier.layoutId("clubNameIcon")
                         .padding(start = 4.dp)
+                )
+            }
+            if (!roomName.isNullOrEmpty()) {
+                Text(
+                    text = roomName,
+                    style = MaterialTheme.typography.body1.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
+                    modifier = Modifier.layoutId("roomNameText"),
+                    maxLines = 2
                 )
             }
         }
