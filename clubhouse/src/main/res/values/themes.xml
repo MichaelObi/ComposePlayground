@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ComposePlayground" parent="Theme.MaterialComponents.Light">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/rice_cake</item>
+        <item name="colorPrimaryVariant">@color/rice_cake</item>
+        <item name="colorOnPrimary">@color/night_rider</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/rice_cake</item>
+        <item name="colorSecondaryVariant">@color/rice_cake</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/rice_cake</item>
+    </style>
+
+    <style name="Theme.ComposePlayground.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.ComposePlayground.AppBarOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.ComposePlayground.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+</resources>

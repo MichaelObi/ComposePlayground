@@ -1,8 +1,10 @@
 package com.paystack.composeplayground.ui.main
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.*
-import androidx.compose.foundation.Icon
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -14,13 +16,11 @@ import androidx.compose.runtime.savedinstancestate.savedInstanceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusState
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.focusObserver
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.paystack.composeplayground.R
 import com.paystack.composeplayground.data.*
-
 
 @Composable
 fun FormTopAppBar(
@@ -56,7 +56,6 @@ fun OnboardingScreen(
     modifier: Modifier = Modifier,
     onAnswerChanged: (RequirementId, Answer) -> Unit
 ) {
-    var currentRequirementIndex by savedInstanceState { 0 }
     val requirement = remember(currentRequirementIndex) { requirements[currentRequirementIndex] }
     val answer = answers[requirement.id]
 
@@ -153,7 +152,10 @@ fun SingleChoiceField(
     val textField = @Composable {
         Box(
             modifier = Modifier.fillMaxWidth()
-                .border(BorderStroke(0.5.dp, MaterialTheme.colors.onSurface), RoundedCornerShape(4.dp))
+                .border(
+                    BorderStroke(0.5.dp, MaterialTheme.colors.onSurface),
+                    RoundedCornerShape(4.dp)
+                )
                 .wrapContentHeight()
                 .clickable(onClick = { expanded = true })
         ) {

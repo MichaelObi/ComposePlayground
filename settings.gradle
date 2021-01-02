@@ -1,2 +1,3 @@
 rootProject.name = "ComposePlayground"
 include ':app'
+include ':clubhouse'

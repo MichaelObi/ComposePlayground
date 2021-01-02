@@ -13,7 +13,7 @@ fun randomId() = UUID.randomUUID().toString()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModel : ViewModel() {
-    private val _state = MutableStateFlow(MainViewState(listOf(), mapOf()))
+    private val _state = MutableStateFlow(MainViewState(0, listOf(), mapOf()))
     val state: LiveData<MainViewState>
         get() = _state.asLiveData()
 

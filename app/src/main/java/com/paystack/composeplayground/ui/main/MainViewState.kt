@@ -6,6 +6,7 @@ import com.paystack.composeplayground.data.Requirement
 typealias RequirementId = String
 
 data class MainViewState(
-    val requirements: List<Requirement>,
-    val answers: Map<RequirementId, Answer>
+    var currentRequirementIndex: Int = 0,
+    val requirements: List<Requirement> = listOf(),
+    val answers: Map<RequirementId, Answer> = mapOf()
 )
