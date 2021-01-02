@@ -112,7 +112,8 @@ fun RoomList() {
             listOf(
                 RoomMember("Michael", RoomMemberStatus.listener),
                 RoomMember("Tari A", RoomMemberStatus.moderator),
-                RoomMember("Maranna", RoomMemberStatus.listener)
+                RoomMember("Maranna", RoomMemberStatus.listener),
+                RoomMember("David Kezi", RoomMemberStatus.speaker),
             )
         )
     }
