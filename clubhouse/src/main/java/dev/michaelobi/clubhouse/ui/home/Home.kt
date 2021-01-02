@@ -111,7 +111,7 @@ fun RoomList() {
             "Vibes and Insha'Allah ($n)",
             listOf(
                 RoomMember("Michael", RoomMemberStatus.listener),
-                RoomMember("Tari A", RoomMemberStatus.listener),
+                RoomMember("Tari A", RoomMemberStatus.moderator),
                 RoomMember("Maranna", RoomMemberStatus.listener)
             )
         )
@@ -185,7 +185,7 @@ fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
             if (!roomName.isNullOrEmpty()) {
                 Text(
                     text = roomName,
-                    style = MaterialTheme.typography.body1.copy(
+                    style = MaterialTheme.typography.subtitle1.copy(
                         fontWeight = FontWeight.SemiBold
                     ),
                     modifier = Modifier.layoutId("roomNameText"),
@@ -201,7 +201,9 @@ fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
                 members.forEach { roomMember ->
                     Text(
                         text = roomMember.name,
-                        style = MaterialTheme.typography.subtitle1,
+                        style = MaterialTheme.typography.subtitle1.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
                         maxLines = 1
                     )
                 }
