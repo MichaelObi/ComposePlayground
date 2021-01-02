@@ -13,6 +13,7 @@ private val LightColorPalette = lightColors(
 
     background = chBackground,
     onBackground = Color.Black,
+    surface = Color.White,
 
     /* Other default colors to override
     surface = Color.White,
