@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.viewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.michaelobi.clubhouse.R
+import dev.michaelobi.clubhouse.data.model.RoomMember
+import dev.michaelobi.clubhouse.data.model.RoomMemberStatus
 import dev.michaelobi.clubhouse.ui.theme.jungleGreen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
@@ -39,7 +41,9 @@ fun Home() {
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()
                     .padding(vertical = 16.dp, horizontal = 8.dp)
             )
-            ScrollableColumn() {
+            ScrollableColumn(
+                modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 8.dp)
+            ) {
                 RoomList()
             }
         }
@@ -102,12 +106,20 @@ fun HomeAppBar(avatarUrl: String?, modifier: Modifier) {
 @Composable
 fun RoomList() {
     for (n in 1..15) {
-        RoomCard("Vibes and Insha'Allah", "Vibes and Insha'Allah ($n)")
+        RoomCard(
+            "Vibes and Insha'Allah",
+            "Vibes and Insha'Allah ($n)",
+            listOf(
+                RoomMember("Michael", RoomMemberStatus.listener),
+                RoomMember("Tari A", RoomMemberStatus.listener),
+                RoomMember("Maranna", RoomMemberStatus.listener)
+            )
+        )
     }
 }
 
 @Composable
-fun RoomCard(clubName: String?, roomName: String?) {
+fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = 1.dp,
@@ -118,6 +130,8 @@ fun RoomCard(clubName: String?, roomName: String?) {
             val clubNameText = createRefFor("clubNameText")
             val clubNameIcon = createRefFor("clubNameIcon")
             val roomNameText = createRefFor("roomNameText")
+            val avatarPreviewArea = createRefFor("avatarPreviewArea")
+            val memberList = createRefFor("memberList")
 
             constrain(clubNameText) {
                 start.linkTo(parent.start)
@@ -134,6 +148,20 @@ fun RoomCard(clubName: String?, roomName: String?) {
                 start.linkTo(parent.start)
                 top.linkTo(clubNameText.bottom)
                 end.linkTo(parent.end)
+                width = Dimension.fillToConstraints
+            }
+
+            constrain(avatarPreviewArea) {
+                start.linkTo(parent.start)
+                top.linkTo(roomNameText.bottom)
+                width = Dimension.percent(0.22f)
+                height = Dimension.wrapContent
+            }
+            constrain(memberList) {
+                start.linkTo(avatarPreviewArea.end)
+                top.linkTo(roomNameText.bottom)
+                end.linkTo(parent.end)
+                height = Dimension.wrapContent
                 width = Dimension.fillToConstraints
             }
         }
@@ -158,11 +186,26 @@ fun RoomCard(clubName: String?, roomName: String?) {
                 Text(
                     text = roomName,
                     style = MaterialTheme.typography.body1.copy(
-                        fontWeight = FontWeight.Medium
+                        fontWeight = FontWeight.SemiBold
                     ),
                     modifier = Modifier.layoutId("roomNameText"),
                     maxLines = 2
                 )
+            }
+
+            Column(modifier = Modifier.layoutId("avatarPreviewArea").padding(top = 16.dp)) {
+
+            }
+
+            Column(modifier = Modifier.layoutId("memberList").padding(top = 16.dp)) {
+                members.forEach { roomMember ->
+                    Text(
+                        text = roomMember.name,
+                        style = MaterialTheme.typography.subtitle1,
+                        maxLines = 1
+                    )
+                }
+
             }
         }
     }
