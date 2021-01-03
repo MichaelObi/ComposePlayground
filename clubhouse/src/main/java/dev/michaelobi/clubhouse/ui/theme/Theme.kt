@@ -9,7 +9,8 @@ import androidx.compose.ui.graphics.Color
 
 private val LightColorPalette = lightColors(
     primary = Color.Black,
-    secondary = Color.Black,
+    secondary = jungleGreen,
+    onSecondary = Color.White,
 
     background = chBackground,
     onBackground = Color.Black,
@@ -18,7 +19,6 @@ private val LightColorPalette = lightColors(
     /* Other default colors to override
     surface = Color.White,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
     onSurface = Color.Black,
     */
 )

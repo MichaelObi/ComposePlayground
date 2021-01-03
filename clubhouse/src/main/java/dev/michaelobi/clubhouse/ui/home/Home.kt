@@ -26,8 +26,10 @@ import dev.michaelobi.clubhouse.R
 import dev.michaelobi.clubhouse.data.model.RoomMember
 import dev.michaelobi.clubhouse.data.model.RoomMemberStatus
 import dev.michaelobi.clubhouse.ui.theme.jungleGreen
+import dev.michaelobi.clubhouse.ui.utils.verticalGradientScrim
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import java.util.*
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
@@ -35,16 +37,55 @@ fun Home() {
     val viewModel: HomeViewModel = viewModel()
     val viewState by viewModel.state.collectAsState()
     Surface(color = MaterialTheme.colors.background, modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             HomeAppBar(
                 avatarUrl = viewState.avatarUrl,
                 modifier = Modifier.fillMaxWidth().wrapContentHeight()
                     .padding(vertical = 16.dp, horizontal = 8.dp)
             )
-            ScrollableColumn(
-                modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(horizontal = 8.dp)
-            ) {
-                RoomList()
+            ConstraintLayout(Modifier.fillMaxWidth().fillMaxHeight()) {
+                val (contentScrollColumn, fabContainer) = createRefs()
+                ScrollableColumn(
+                    modifier = Modifier.padding(horizontal = 8.dp)
+                        .constrainAs(contentScrollColumn) {
+                            top.linkTo(parent.top)
+                            bottom.linkTo(parent.bottom)
+                            start.linkTo(parent.start)
+                            end.linkTo(parent.end)
+                            width = Dimension.fillToConstraints
+                            height = Dimension.fillToConstraints
+                        }
+                ) {
+                    RoomList()
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.Top,
+                    modifier = Modifier.verticalGradientScrim(
+                        color = MaterialTheme.colors.background,
+                        decay = 0.9f,
+                        startYPercentage = 0f,
+                        endYPercentage = 0.8f
+                    ).constrainAs(fabContainer) {
+                        bottom.linkTo(parent.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                ) {
+                    FloatingActionButton(onClick = { /*TODO*/ }) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        ) {
+                            Image(imageVector = vectorResource(id = R.drawable.ic_round_add_24))
+                            Text(text = "Start a room", style = MaterialTheme.typography.button,
+                                modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(120.dp))
+                }
+
             }
         }
     }
@@ -117,6 +158,7 @@ fun RoomList() {
             )
         )
     }
+    Spacer(modifier = Modifier.height(120.dp))
 }
 
 @Composable
