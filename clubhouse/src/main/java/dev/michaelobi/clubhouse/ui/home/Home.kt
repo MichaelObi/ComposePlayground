@@ -19,7 +19,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.viewModel
 import dev.chrisbanes.accompanist.coil.CoilImage
 import dev.michaelobi.clubhouse.R
@@ -76,11 +75,13 @@ fun Home() {
                     FloatingActionButton(onClick = { /*TODO*/ }) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 20.dp)
+                            modifier = Modifier.padding(start = 24.dp, end = 28.dp, bottom = 2.dp)
                         ) {
                             Image(imageVector = vectorResource(id = R.drawable.ic_round_add_24))
-                            Text(text = "Start a room", style = MaterialTheme.typography.button,
-                                modifier = Modifier.padding(start = 8.dp))
+                            Text(
+                                text = "Start a room", style = MaterialTheme.typography.button,
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(120.dp))
@@ -132,11 +133,11 @@ fun HomeAppBar(avatarUrl: String?, modifier: Modifier) {
             Row(
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 20.dp)
+                modifier = Modifier.padding(start = 20.dp, end = 4.dp)
             ) {
                 Avatar(
                     imageUrl = avatarUrl,
-                    Modifier.size(40.dp)
+                    Modifier.size(36.dp)
                 )
             }
         }
@@ -164,7 +165,7 @@ fun RoomList() {
 @Composable
 fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         elevation = 1.dp,
         modifier = Modifier.fillMaxWidth().padding(8.dp)
     ) {
@@ -197,7 +198,7 @@ fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
             constrain(avatarPreviewArea) {
                 start.linkTo(parent.start)
                 top.linkTo(roomNameText.bottom)
-                width = Dimension.percent(0.22f)
+                width = Dimension.percent(0.25f)
                 height = Dimension.wrapContent
             }
             constrain(memberList) {
@@ -210,12 +211,13 @@ fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
         }
         ConstraintLayout(
             constraintSet = constraintSet,
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(16.dp)
+            modifier = Modifier.fillMaxWidth().wrapContentHeight()
+                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 24.dp)
         ) {
             if (!clubName.isNullOrEmpty()) {
                 Text(
                     text = clubName.toUpperCase(Locale.getDefault()),
-                    style = MaterialTheme.typography.caption.copy(letterSpacing = 1.0.sp),
+                    style = MaterialTheme.typography.caption,
                     modifier = Modifier.layoutId("clubNameText")
                 )
                 Image(
@@ -229,7 +231,7 @@ fun RoomCard(clubName: String?, roomName: String?, members: List<RoomMember>) {
                 Text(
                     text = roomName,
                     style = MaterialTheme.typography.subtitle1.copy(
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.layoutId("roomNameText"),
                     maxLines = 2
@@ -262,7 +264,7 @@ fun Avatar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(14.dp),
         modifier = modifier
     ) {
         CoilImage(
